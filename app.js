@@ -17,7 +17,7 @@ const port = process.env.PORT || 9009;
  *
  * @param {Object} - webhook object
  * @returns {Integer} - 200 HTTP OK
- */
+ 
 app.post('/processor', async (req, res) => {
     try {
         // Check that request contains an events object
@@ -69,6 +69,7 @@ app.post('/processor', async (req, res) => {
         res.json({ success: false, error: err.message });
     }
 });
+*/
 
 
 app.get('/cart', (req, res) => {
