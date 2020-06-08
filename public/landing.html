@@ -1,0 +1,152 @@
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="/styles/custom.css">
+        <style>
+            .pageLoader {
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                width: 3rem;
+                height: 3rem;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container-color d-flex w-100 h-100 mx-auto flex-column">
+            <div class="pageLoader">
+                <h4 style="position: relative;left: -200%;display: block; width: max-content"> LOADING YOUR CART </h4>
+                <div id="loading-spinner" class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <script>
+
+            // Global variables
+
+            let storefrontInitialLoad = false;
+            let securePayload = {};
+
+            function dataCallback() {
+                if (storefrontInitialLoad) {
+                    storefrontInitialLoad = false;
+                    console.log(JSON.stringify(securePayload));
+                    //fastspring.builder.secure(securePayload);
+                    fastspring.builder.checkout();
+                }
+            }
+
+            function populateDataCallback(cartData){
+                // Construct secure session payload
+                const { order, email, firstName, lastName, country, language } = cartData;
+                const items = order.items.map(item => ({
+                    product: item.product,
+                    quantity: item.quantity
+                }));
+                const contact = {
+                    email,
+                    firstName,
+                    lastName
+                };
+
+                securePayload = {
+                    reset: true,
+                    contact,
+                    items,
+                    country,
+                    language
+                };
+            }
+
+            /*  deleteCurrentStorefront
+             *
+             *  Delete SBL from the current browser session
+             */
+            function deleteCurrentStorefront() {
+                const fscScript = document.getElementById('fsc-api');
+                if (fscScript) {
+                    // Remove script from DOM
+                    fscScript.parentNode.removeChild(fscScript);
+                    // Delete fastspring builder from memory
+                    delete document.fastspring;
+                }
+            }
+
+            function setCustomStorefront(storefrontId, accessKey) {
+                // Make sure there isn't an instance of SBL already installed on the page
+                deleteCurrentStorefront();
+
+                // Construct full storefrontUrl based on storefrontId
+                const storefront = storefrontId.includes('/') ?
+                    `${storefrontId.split('/')[0]}/test.onfastspring.com/${storefrontId.split('/')[1]}` : // Popup URL
+                    `${storefrontId}.test.onfastspring.com`; // Web storefront URL
+
+                // Install SBL pointing to this storefront
+                const script = document.createElement('script');
+                script.onload = function () {
+                    console.log('storefront loaded');
+                };
+                script.id = 'fsc-api';
+                script.setAttribute('data-storefront', storefront);
+                script.setAttribute('data-access-key', accessKey);
+                script.setAttribute('data-error-callback', 'dataErrorCallback');
+                script.setAttribute('data-data-callback', 'dataCallback');
+                script.setAttribute('data-popup-closed', 'dataPopupClosed');
+                // Set flag to display popup when SBL finishes installation
+                storefrontInitialLoad = true;
+
+                // Install SBL
+                script.src = 'https://d1f8f9xcsvx3ha.cloudfront.net/sbl/0.8.0/fastspring-builder.min.js';
+                document.head.appendChild(script);
+            }
+
+            function createSession(cartData) {
+                // Overwrite global dataCallback function so that the cart session
+                // is securely execute as soon as SBL loads onto the page
+                populateDataCallback(cartData);
+                // Install SBL pointing to store
+                setCustomStorefront(cartData.storefront, cartData.accessKey);
+            }
+
+            document.addEventListener("DOMContentLoaded", function() {
+                var url_string = window.location.href;
+                var url = new URL(url_string);
+                var cartId = url.searchParams.get("cartId");
+                if (cartId) {
+                    // Recover session and display
+                    const Http = new XMLHttpRequest();
+                    const url= `/cart?cartId=${cartId}`;
+                    Http.open('GET', url);
+                    Http.onreadystatechange = function() {
+                        // Check response is correct and parse the receiving JSON
+                        if (this.readyState === 4 && this.status === 200) {
+                            const res = JSON.parse(this.responseText);
+                            if (res && res.success) {
+                                createSession(res.data);
+                            } else {
+                                alert(`Error: ${res.error}`);
+                            }
+                        } else if (this.readyState === 4) {
+                            alert('Error: Server not responding. Please try again');
+                        }
+                    };
+                    Http.send();
+                }
+            });
+        </script>
+        <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    </body>
+</html>

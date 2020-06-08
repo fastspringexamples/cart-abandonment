@@ -18,11 +18,12 @@ const createCartLink = async (cart, solutionType) => {
         };
         // Create session
         const session = await sessionsAPI.createSession(sessionPayload);
-        // TODO check response
-        console.log(session);
+        if (session.error) {
+            throw new Error(`Problems creating session: ${session.error}`);
+        }
         // Create sessionURL
         // Let's assume for now that it's a web storefront
-        cartUrl = `https://${storefront}.test.onfastspring.com/sessions/${session.id}`;
+        cartUrl = `https://${storefront}.test.onfastspring.com/session/${session.id}`;
     } else if (solutionType === 'webstorefrontURL') {
         // Attach the only product path to the webstorefrontURL
         const productPath = cart.order.items[0].product;
@@ -32,7 +33,7 @@ const createCartLink = async (cart, solutionType) => {
         // Store all the webhook information inside the database so that it can
         // be retrieved at any point by the landing page when it loads
         const { id } = cart;
-        DBdriver.writeContent({ id: cart });
+        DBdriver.writeContent({ [id]: cart });
         cartUrl = `http://localhost:9009/landing.html?webhookId=${id}`;
     }
 

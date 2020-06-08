@@ -31,10 +31,7 @@ const get = (params) => {
     return request(options)
         .catch(errors.StatusCodeError, (reason) => {
             // The server responded with a status codes other than 2xx.
-            if (reason.statusCode === 400) {
-                return { error: 'Order not found' };
-            }
-            return { error: 'Problems accessing API' };
+            return { success: false, error: reason.message };
         });
 };
 
@@ -55,14 +52,10 @@ const post = (params, body) => {
         json: true,
         body
     };
-    console.log(options.body.items);
+    console.log(options.body);
     return request(options)
         .catch(errors.StatusCodeError, (reason) => {
-            // The server responded with a status codes other than 2xx.
-            if (reason.statusCode === 400) {
-                return { error: 'Order not found' };
-            }
-            return { error: 'Problems accessing API' };
+            return { success: false, error: reason.message };
         });
 };
 
