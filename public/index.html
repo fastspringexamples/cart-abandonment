@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.ico">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link href="/styles/jsoneditor.min.css" rel="stylesheet" type="text/css">
+        <link href="/styles/custom.css" rel="stylesheet" type="text/css">
+        <script src="/js/jsoneditor.min.js"></script>
+        <script
+          src="https://code.jquery.com/jquery-3.4.1.min.js"
+          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+          crossorigin="anonymous">
+      </script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <!-- Custom js code: Make sure to load common.js first as it defines global variables used by other files -->
+        <script src="js/example-webhooks.js"></script>
+        <script src="js/jsoneditor-helpers.js"></script>
+        <script>
+	</script>
+    </head>
+    <body>
+        <div class="container">
+            <header class="blog-header py-3">
+                <div class="row justify-content-center">
+                    <div class="col offset-md-4">
+                        <a href="https://fastspring.com" target="_blank" style="color: transparent;">
+                            <img src="images/fastspring-logo.png" alt="homepage" class="fs-logo">
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="row">
+                <div class="col-6">
+                    <div id='raw-code'>
+                        <div class="row">
+                            <div id="jsoneditor" class="col-12" style="height: 400px"></div>
+                            </div>
+                        <button type="button" class="btn btn-primary" id='encryptButton' onclick="sendWebhook()">
+                            Send webhook
+                        </button>
+                    </div>
+                    <br/>
+                </div>
+                <div class="col-6">
+                    <div id='instructions-container'>
+                        <div class="card">
+                        
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="cart-type-select">Select cart solution example</label>
+                                    <select class="form-control" id="cart-type-select" onchange="loadExampleWebhook()">
+                                        <option selected value="webstorefrontURL">WebstorefrontURL</option>
+                                        <option value="landingPage">Landing Page</option>
+                                        <option value="sessionExistingAccount">Session (existing account)</option>
+                                        <option value="sessionNewAccount">Session (new account)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-12">
+                <pre id="response-div">
+
+                </pre>
+                </div>
+            </div>
+        </div>
+        <script>
+            let JsonEditor = {};
+            window.addEventListener('DOMContentLoaded', () => {
+                // Initial render of the JSON editor
+                const container = document.getElementById('jsoneditor');
+                const options = {
+                    mode: 'code',
+                    onError: function (err) {
+                        alert(err.toString());
+                    },
+                    onChange: function () {
+                        const valid = checkPayloadValidity();
+                        if (!valid) {
+                            $('#encryptButton').attr("disabled", true);
+                        } else {
+                            $('#encryptButton').removeAttr("disabled");
+                        }
+                    }
+                };
+
+                JsonEditor = new JSONEditor(container, options);
+
+                // Customize the JSON editor menu
+                customizeJSONEditor();
+                loadExampleWebhook();
+            });
+
+            function sendWebhook() {
+                const payload = JsonEditor.get();
+
+                // Create AJAX request to our backend
+                const Http = new XMLHttpRequest();
+                const url= `${window.location.origin}/processor`;
+                Http.open('POST', url, true);
+                Http.setRequestHeader("Content-Type", "application/json");
+
+                Http.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                        const resCart = JSON.parse(this.responseText);
+                        if (resCart.success) {
+                            $('#response-div').html(resCart.cartUrl);
+                        } else {
+                            alert('Problem with webhook', resEncrypted.error);
+                        }
+                    } else if (this.readyState === 4) {
+                        alert('Problem with server: ', this.responseText);
+                    }
+                };
+                Http.send(JSON.stringify(payload));
+            }
+
+        </script>
+    </body>
+</html>
+

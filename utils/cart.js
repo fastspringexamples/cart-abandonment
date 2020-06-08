@@ -34,7 +34,7 @@ const createCartLink = async (cart, solutionType) => {
         // be retrieved at any point by the landing page when it loads
         const { id } = cart;
         DBdriver.writeContent({ [id]: cart });
-        cartUrl = `http://localhost:9009/landing.html?webhookId=${id}`;
+        cartUrl = `http://localhost:9009/landing.html?cartId=${id}`;
     }
 
     return cartUrl;
@@ -53,7 +53,7 @@ const createCartAbandEmail = async (cart, solutionType) => {
     const cartUrl = await createCartLink(cart, solutionType);
 
     // Create email's content
-    const dummyText = `Hi, this is your cart ${cartUrl}`;
+    const dummyText = `Hi, here is a link to complete your purchase: <a>${cartUrl}</a>`;
     return dummyText;
 };
 

@@ -37,8 +37,7 @@
             function dataCallback() {
                 if (storefrontInitialLoad) {
                     storefrontInitialLoad = false;
-                    console.log(JSON.stringify(securePayload));
-                    //fastspring.builder.secure(securePayload);
+                    fastspring.builder.secure(securePayload);
                     fastspring.builder.checkout();
                 }
             }

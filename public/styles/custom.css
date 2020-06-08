@@ -1,0 +1,43 @@
+a.jsoneditor-poweredBy {
+    display: none!important;
+}
+
+.blog-header {
+    line-height: 1;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 40px;
+}
+
+.jsoneditor-menu > button {
+    float: right;
+}
+
+.editor-title {
+    float: left;
+    padding-top: 6px;
+    padding-left: 7px;
+}
+
+#popupFormStorefront {
+    width: 50%;
+    margin: auto;
+}
+
+.keys-warning {
+    padding: 8px;
+    border: 2px solid red;
+}
+
+#resetWizard {
+    color: #007bff;
+    cursor: pointer;
+}
+
+#popupFormStorefront .modal-footer {
+    border-top: 0;
+}
+
+#default-product-paths {
+    list-style-type: square;
+    margin-left: 2em;
+}

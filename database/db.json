@@ -10,22 +10,22 @@
             "order": null,
             "items": [
                 {
-                    "product": "phot-io-main-app",
+                    "product": "cam-pack",
                     "quantity": 1,
-                    "display": "phot-io-main-app",
+                    "display": "cam-pack",
                     "summary": null,
                     "imageUrl": null
                 },
                 {
-                    "product": "cam-pack",
+                    "product": "phot-io-main-app",
                     "quantity": 2,
-                    "display": "cam-pack",
+                    "display": "phot-io-main-app",
                     "summary": null,
                     "imageUrl": null
                 }
             ]
         },
-        "email": "jtrujillouuu@fastspring.com",
+        "email": "jtrujillossda@fastspring.com",
         "firstName": null,
         "lastName": null,
         "country": "NL",

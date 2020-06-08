@@ -52,7 +52,6 @@ const post = (params, body) => {
         json: true,
         body
     };
-    console.log(options.body);
     return request(options)
         .catch(errors.StatusCodeError, (reason) => {
             return { success: false, error: reason.message };
