@@ -156,8 +156,8 @@ const exampleWebhooks = {
                         ]
                     },
                     "email": generateRandonEmail(),
-                    "firstName": "Jacier",
-                    "lastName": "OKi",
+                    "firstName": "Jhon",
+                    "lastName": "Doe",
                     "country": "NL",
                     "currency": "EUR",
                     "language": "en",

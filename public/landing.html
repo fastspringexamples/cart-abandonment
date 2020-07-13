@@ -84,7 +84,7 @@
 
                 // Construct full storefrontUrl based on storefrontId
                 const storefront = storefrontId.includes('/') ?
-                    `${storefrontId.split('/')[0]}/test.onfastspring.com/${storefrontId.split('/')[1]}` : // Popup URL
+                    `${storefrontId.split('/')[0]}.test.onfastspring.com/${storefrontId.split('/')[1]}-${storefrontId.split('/')[0]}` : // Popup URL
                     `${storefrontId}.test.onfastspring.com`; // Web storefront URL
 
                 // Install SBL pointing to this storefront

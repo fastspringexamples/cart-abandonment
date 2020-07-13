@@ -34,7 +34,8 @@ const createCartLink = async (cart, solutionType) => {
         // be retrieved at any point by the landing page when it loads
         const { id } = cart;
         DBdriver.writeContent({ [id]: cart });
-        cartUrl = `http://localhost:9009/landing.html?cartId=${id}`;
+        // TODO replace domain with current server (localhost in development)
+        cartUrl = `https://fs-encryption.herokuapp.com/landing.html?cartId=${id}`;
     }
 
     return cartUrl;

@@ -44,8 +44,7 @@
                 </div>
                 <div class="col-6">
                     <div id='instructions-container'>
-                        <div class="card">
-                        
+                        <div class="card" style="min-height:400px">
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="cart-type-select">Select cart solution example</label>
@@ -56,6 +55,8 @@
                                         <option value="sessionNewAccount">Session (new account)</option>
                                     </select>
                                 </div>
+                                <p id="flow-explanation-text">
+                                <p>
                             </div>
                         </div>
                     </div>
@@ -96,6 +97,82 @@
                 customizeJSONEditor();
                 loadExampleWebhook();
             });
+
+            /*  loadExampleWebhook
+             *
+             *  It populates the JSON editor with a valid JSON payload
+             *  based on the current webhook example selected
+             */ 
+            function loadExampleWebhook(data) {
+                const selector = document.getElementById("cart-type-select");
+                const exampleType = selector.options[selector.selectedIndex].value;
+
+                renderFlowText(exampleType);
+                // Render payload in JSON editor
+                renderJSONEditor(exampleWebhooks[exampleType]);
+            }
+
+            /*  renderFlowText
+             *
+             *  Render the text that explains in more detail the current
+             *  flow type selected
+             */
+            function renderFlowText(exampleType) {
+                let description;
+                switch(exampleType) {
+                    case 'webstorefrontURL':
+                        description = `
+                        <p> This example payload leads to the webstorefrontURL solution because:
+                        <ul>
+                            <li> It contains an email address unknown, there is no account associated to this email address in the current store </li> 
+                            <li> Email does not contain enough information to create a new account, it's missing first and last name </li>
+                            <li> The cart has only one product </li>
+                            <li> The storefront in the payload is a web storefront </li> 
+                        </ul>
+                        </p>
+                        `;
+                        break;
+                    case 'landingPage':
+                        description = `
+                        <p> This example payload creates a link to a landing page which will perform a secure call to launch the checkout as soon as the page loads:
+                        <ul>
+                            <li> It contains an email address unknown, there is no account associated to this email address in the current store </li> 
+                            <li> Email does not contain enough information to create a new account, it's missing first and last name </li>
+                            <li> The cart contains more than one product
+                            <li> The storefront in the payload is a web storefront. This means that the secure call in the landing page will end up creating a session in the web storefront </li> 
+                        </ul>
+                        </p>
+                        `;
+                        break;
+                    case 'sessionExistingAccount':
+                        description = `
+                        <p> This example payload creates a session URL because:
+                        <ul>
+                            <li> The email address is known, there's an account associated to it in this store. </li> 
+                            <li> In this case the cart contains two items. The session can be created with any number of items. </li>
+                            <li> The storefront in the payload is a web storefront so this will create a session URL for that web storefront. </li> 
+                        </ul>
+                        </p>
+                        `;
+                        break;
+                    case 'sessionNewAccount':
+                        description = `
+                        <p> This example payload creates a session URL because:
+                        <ul>
+                            <li> It contains an email address unknown, there is no account associated to this email address in the current store </li>
+                            <li> It contains first and last names so we can create a new account and associate it to this email address. This will allow us to create a session </li> 
+                            <li> In this case the cart contains two items. The session can be created with any number of items. </li>
+                            <li> The storefront in the payload is a web storefront so this will create a session URL for that web storefront. </li> 
+                        </ul>
+                        </p>
+                        `;
+                        break;
+                        break;
+
+                }
+
+                $('#flow-explanation-text').html(description);
+            }
 
             function sendWebhook() {
                 const payload = JsonEditor.get();

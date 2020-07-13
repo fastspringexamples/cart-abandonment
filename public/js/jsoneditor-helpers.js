@@ -2,17 +2,6 @@
  * Functions that interact with the JSON Editor component
  */
 
-/*  loadExampleWebhook
- *
- *  It populates the JSON editor with a valid JSON payload
- *  based on the current webhook example selected
-*/ 
-function loadExampleWebhook(data) {
-    const selector = document.getElementById("cart-type-select");
-    const exampleType = selector.options[selector.selectedIndex].value;
-    // Render payload in JSON editor
-    renderJSONEditor(exampleWebhooks[exampleType]);
-}
 
 /*  customizeJSONEditor
  *
