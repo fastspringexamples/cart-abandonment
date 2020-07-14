@@ -125,47 +125,6 @@ const exampleWebhooks = {
             }
         ]
     },
-    landingPagePopup: {
-        "events": [
-            {
-                "type": "mailingListEntry.updated",
-                "data": {
-                    "id": "45b0d46432df573c51e3585e92e3e9c612f2ac2ce197c316f234c741cbf8f7df",
-                    "list": "abandoned",
-                    "updated": 1589211085005,
-                    "reason": "abandoned",
-                    "order": {
-                        "reference": null,
-                        "id": null,
-                        "order": null,
-                        "items": [
-                            {
-                                "product": "cam-pack",
-                                "quantity": 1,
-                                "display": "cam-pack",
-                                "summary": null,
-                                "imageUrl": null
-                            },
-                            {
-                                "product": "phot-io-main-app",
-                                "quantity": 2,
-                                "display": "phot-io-main-app",
-                                "summary": null,
-                                "imageUrl": null
-                            }
-                        ]
-                    },
-                    "email": "jtrujillossda@fastspring.com",
-                    "firstName": null,
-                    "lastName": null,
-                    "country": "NL",
-                    "currency": "EUR",
-                    "language": "en",
-                    "storefront": "fastspringexamplesii/popup"
-                }
-            }
-        ]
-    },
     sessionExistingAccount: {
         "events": [
             {
