@@ -52,9 +52,17 @@ const createCartLink = async (cart, solutionType) => {
 const createCartAbandEmail = async (cart, solutionType) => {
     // Create appropiate link to add to the email content
     const cartUrl = await createCartLink(cart, solutionType);
-
     // Create email's content
-    const dummyText = `Hi, here is a link to complete your purchase: <a>${cartUrl}</a>`;
+    let dummyText;
+    if (cart.language === 'es') {
+        dummyText =
+`Hola${cart.firstName !== null ? ` ${cart.firstName}` : ''},
+Visite el siguiente link para completar su compra: <a href="${cartUrl}" target="_blank">${cartUrl}</a>`;
+    } else {
+    dummyText =
+`Hi${cart.firstName !== null ? ` ${cart.firstName}` : ''},
+Here is a link to complete your purchase: <a href="${cartUrl}" target="_blank">${cartUrl}</a>`;
+    }
     return dummyText;
 };
 
