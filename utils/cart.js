@@ -54,7 +54,7 @@ const createCartAbandEmail = async (cart, solutionType) => {
     const cartUrl = await createCartLink(cart, solutionType);
 
     // Create email's content
-    const dummyText = `Hi, here is a link to complete your purchase: <a>${cartUrl}</a>`;
+    const dummyText = `Hi, here is a link to complete your purchase: <a href="${cartUrl}" target="_blank">${cartUrl}</a>`;
     return dummyText;
 };
 

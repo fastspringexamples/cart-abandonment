@@ -22,7 +22,7 @@ function customizeJSONEditor() {
     $('.jsoneditor-menu').empty();
     children.appendTo(editorElement);
     // Insert title
-    const editorTitle = '<p class="editor-title"> Custom JSON Payload </p>';
+    const editorTitle = '<p class="editor-title"> mailingListEntry.updated webhook </p>';
     editorElement.prepend(editorTitle);
 }
 
