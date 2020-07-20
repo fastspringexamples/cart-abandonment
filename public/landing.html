@@ -20,6 +20,10 @@
 
     <body>
         <div class="container-color d-flex w-100 h-100 mx-auto flex-column">
+            <div>
+                <p style="padding: 10px"> In this landing page we query the backend for webhook information and load SBL with the contents of the cart. </p>
+            </div>
+
             <div class="pageLoader">
                 <h4 style="position: relative;left: -200%;display: block; width: max-content"> LOADING YOUR CART </h4>
                 <div id="loading-spinner" class="spinner-border" role="status">
@@ -40,6 +44,11 @@
                     fastspring.builder.secure(securePayload);
                     fastspring.builder.checkout();
                 }
+            }
+
+            function dataPopupClosed() {
+                // Redirect user back to previous page by default
+                window.location.href = 'https://fs-encryption.herokuapp.com';
             }
 
             function populateDataCallback(cartData){
