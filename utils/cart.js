@@ -35,7 +35,7 @@ const createCartLink = async (cart, solutionType) => {
         const { id } = cart;
         DBdriver.writeContent({ [id]: cart });
         // TODO replace domain with current server (localhost in development)
-        cartUrl = `https://fs-encryption.herokuapp.com/landing.html?cartId=${id}`;
+        cartUrl = `https://fs-cart-abandonment.herokuapp.com/landing.html?cartId=${id}`;
     }
 
     return cartUrl;

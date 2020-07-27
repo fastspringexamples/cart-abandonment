@@ -29,7 +29,6 @@ app.post('/processor', async (req, res) => {
                     const { data } = event;
                     // First double check if an account with this email already exists
                     const resAccount = await accountsAPI.getAccount(data.email);
-                    console.log(resAccount);
                     if (resAccount.result === 'success') {
                         const accountId = resAccount.accounts[0].account;
                         data.accountId = accountId;
