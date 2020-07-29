@@ -28,7 +28,7 @@ const exampleWebhooks = {
                                 "quantity": 1,
                                 "display": "cam-pack",
                                 "summary": null,
-                                "imageUrl": null
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/LElLgQ6PR4k/thumbnail-cam-pack.png"
                             }
                         ]
                     },
@@ -62,14 +62,14 @@ const exampleWebhooks = {
                                 "quantity": 1,
                                 "display": "cam-pack",
                                 "summary": null,
-                                "imageUrl": null
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/LElLgQ6PR4k/thumbnail-cam-pack.png"
                             },
                             {
                                 "product": "phot-io-main-app",
                                 "quantity": 2,
                                 "display": "phot-io-main-app",
-                                "summary": null,
-                                "imageUrl": null
+                                "summary": "WAHOOOO!  An incredible, full-featured ecosystem for managing digital imagery throughout the entire asset lifecycle regardless of the size and scope of your enterprise.",
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/v70BxblbRv0/photio-imac-hero.png"
                             }
                         ]
                     },
@@ -103,14 +103,14 @@ const exampleWebhooks = {
                                 "quantity": 1,
                                 "display": "cam-pack",
                                 "summary": null,
-                                "imageUrl": null
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/LElLgQ6PR4k/thumbnail-cam-pack.png"
                             },
                             {
                                 "product": "phot-io-main-app",
                                 "quantity": 2,
                                 "display": "phot-io-main-app",
-                                "summary": null,
-                                "imageUrl": null
+                                "summary": "WAHOOOO!  An incredible, full-featured ecosystem for managing digital imagery throughout the entire asset lifecycle regardless of the size and scope of your enterprise.",
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/v70BxblbRv0/photio-imac-hero.png"
                             }
                         ]
                     },
@@ -125,7 +125,7 @@ const exampleWebhooks = {
             }
         ]
     },
-    sessionExistingAccount: {
+    sessionExistingAccountWeb: {
         "events": [
             {
                 "type": "mailingListEntry.updated",
@@ -143,15 +143,15 @@ const exampleWebhooks = {
                                 "product": "phot-io-main-app",
                                 "quantity": 1,
                                 "display": "phot-io-main-app",
-                                "summary": null,
-                                "imageUrl": null
+                                "summary": "WAHOOOO!  An incredible, full-featured ecosystem for managing digital imagery throughout the entire asset lifecycle regardless of the size and scope of your enterprise.",
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/v70BxblbRv0/photio-imac-hero.png"
                             },
                             {
                                 "product": "cam-pack",
                                 "quantity": 2,
                                 "display": "cam-pack",
                                 "summary": null,
-                                "imageUrl": null
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/LElLgQ6PR4k/thumbnail-cam-pack.png"
                             }
                         ]
                     },
@@ -162,6 +162,47 @@ const exampleWebhooks = {
                     "currency": "EUR",
                     "language": "en",
                     "storefront": "fastspringexamplesii"
+                }
+            }
+        ]
+    },
+    sessionExistingAccountPopup: {
+        "events": [
+            {
+                "type": "mailingListEntry.updated",
+                "data": {
+                    "id": "45b0d46432df573c51e3585e92e3e9c612f2ac2ce197c316f234c741cbf8f7df",
+                    "list": "abandoned",
+                    "updated": 1589211085005,
+                    "reason": "abandoned",
+                    "order": {
+                        "reference": null,
+                        "id": null,
+                        "order": null,
+                        "items": [
+                            {
+                                "product": "phot-io-main-app",
+                                "quantity": 1,
+                                "display": "phot-io-main-app",
+                                "summary": "WAHOOOO!  An incredible, full-featured ecosystem for managing digital imagery throughout the entire asset lifecycle regardless of the size and scope of your enterprise.",
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/v70BxblbRv0/photio-imac-hero.png"
+                            },
+                            {
+                                "product": "cam-pack",
+                                "quantity": 2,
+                                "display": "cam-pack",
+                                "summary": null,
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/LElLgQ6PR4k/thumbnail-cam-pack.png"
+                            }
+                        ]
+                    },
+                    "email": "jtrujillo@fastspring.com",
+                    "firstName": null,
+                    "lastName": null,
+                    "country": "NL",
+                    "currency": "EUR",
+                    "language": "en",
+                    "storefront": "fastspringexamplesii/popup"
                 }
             }
         ]
@@ -184,15 +225,15 @@ const exampleWebhooks = {
                                 "product": "phot-io-main-app",
                                 "quantity": 1,
                                 "display": "phot-io-main-app",
-                                "summary": null,
-                                "imageUrl": null
+                                "summary": "WAHOOOO!  An incredible, full-featured ecosystem for managing digital imagery throughout the entire asset lifecycle regardless of the size and scope of your enterprise.",
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/v70BxblbRv0/photio-imac-hero.png"
                             },
                             {
                                 "product": "cam-pack",
                                 "quantity": 2,
                                 "display": "cam-pack",
                                 "summary": null,
-                                "imageUrl": null
+                                "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/LElLgQ6PR4k/thumbnail-cam-pack.png"
                             }
                         ]
                     },

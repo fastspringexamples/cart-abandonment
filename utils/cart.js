@@ -22,8 +22,11 @@ const createCartLink = async (cart, solutionType) => {
             throw new Error(`Problems creating session: ${session.error}`);
         }
         // Create sessionURL
-        // Let's assume for now that it's a web storefront
-        cartUrl = `https://${storefront}.test.onfastspring.com/session/${session.id}`;
+        const storefrontId = cart.storefront;
+        const storefrontURL = storefrontId.includes('/') ?
+            `${storefrontId.split('/')[0]}.test.onfastspring.com/${storefrontId.split('/')[1]}-${storefrontId.split('/')[0]}` : // Popup URL
+            `${storefrontId}.test.onfastspring.com`; // Web storefront URL
+        cartUrl = `https://${storefrontURL}/session/${session.id}`;
     } else if (solutionType === 'webstorefrontURL') {
         // Attach the only product path to the webstorefrontURL
         const productPath = cart.order.items[0].product;
