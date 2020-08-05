@@ -31,26 +31,32 @@ const createContact = async (webhookData) => {
         lastName,
         language
     } = webhookData;
+    
+    const contactsRes = await ACApi.get(`/contacts?email=${encodeURIComponent(email)}`);
+    if (!contactsRes.contacts || contactsRes.contacts.length === 0) {
+        return { error: 'contact not found' };
+    }
+    const contact = contactsRes.contacts[0];
 
-    let payload = {
-        contact: {
-            email,
-            firstName,
-            lastName
-        }
-    };
-    const contact = await ACApi.post('/contacts', payload);
-    if (contact.error) {
-        return contact;
+    // Add first and last name informations if present
+    if (!contact.firstName && (firstName || lastName)) {
+        const payload = {
+            contact: {
+                email,
+                firstName,
+                lastName
+            }
+        };
+        const updatedContact = await ACApi.put(`/contacts/${contact.id}`, payload);
+        console.log(updatedContact);
     }
 
-    return contact;
-
+    const tagId = language === 'es' ? 6 : 5;
     // Now that the contact is created add a custom tag for language
-    payload = {
+    const payload = {
         contactTag: {
             contact: contact.id,
-            tag: `Lang-${language}`
+            tag: tagId
         }
     };
     const resTag = await ACApi.post('/contactTags', payload);

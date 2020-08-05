@@ -53,15 +53,13 @@ const sendToActiveCampaign = async (cart, cartUrl) => {
         if (customerRes.error) {
             throw new Error(customerRes.error);
         }
-        /* 
-         * TODO: Problem with Contacts, contact AC team to fix it. For now ignore step
         
         // 2. Create contact and add tags
         const contactRes = await createContact(cart);
         if (contactRes.error) {
             throw new Error(contactRes.error);
         }
-        */
+        
         // 3. Create cart abandoned order to trigger automation
         const cartResult = await createCartAbandOrder(cartUrl, customerRes.ecomCustomer, cart);
         if (cartResult.error) {
