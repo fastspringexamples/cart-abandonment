@@ -1,5 +1,5 @@
 const sessionsAPI = require('../apis/fastspring/sessions.js');
-const { createCustomer, createCartAbandOrder } = require('../apis/activecampaign');
+const { createCustomer, createCartAbandOrder, createContact } = require('../apis/activecampaign');
 const DBdriver = require('../utils/DBdriver.js');
 
 const createCartLink = async (cart, solutionType) => {
@@ -45,6 +45,35 @@ const createCartLink = async (cart, solutionType) => {
     return cartUrl;
 };
 
+
+const sendToActiveCampaign = async (cart, cartUrl) => {
+    try {
+        // 1. Create e-commerce customer
+        const customerRes = await createCustomer(cart);
+        if (customerRes.error) {
+            throw new Error(customerRes.error);
+        }
+        /* 
+         * TODO: Problem with Contacts, contact AC team to fix it. For now ignore step
+        
+        // 2. Create contact and add tags
+        const contactRes = await createContact(cart);
+        if (contactRes.error) {
+            throw new Error(contactRes.error);
+        }
+        */
+        // 3. Create cart abandoned order to trigger automation
+        const cartResult = await createCartAbandOrder(cartUrl, customerRes.ecomCustomer, cart);
+        if (cartResult.error) {
+            throw new Error(cartResult.error);
+        }
+        return true;
+    } catch (err) {
+        console.log('Error sending data to Active Campaign: ', err);
+        return false;
+    }
+};
+
 /* createCartAbandEmail
  * Receives cart abandonment information as parameter and sends an email to buyer
  * with a link to the endpoint /createSession containing encrypted cart information.
@@ -52,21 +81,14 @@ const createCartLink = async (cart, solutionType) => {
  * @param {Object} - webhook object
  * @returns {Integer} - 200 HTTP OK
  */
-
 const createCartAbandEmail = async (cart, solutionType) => {
     // Create appropiate link to add to the email content
     const cartUrl = await createCartLink(cart, solutionType);
 
-    // Create cart abandonment order in ActiveCampaign
-    const customerRes = await createCustomer(cart);
-    if (customerRes.error) {
-        console.log('Customer Error', customerRes);
-    } else {
-        const cartResult = await createCartAbandOrder(cartUrl, customerRes.ecomCustomer, cart);
-        console.log(cartResult);
-    }
+    // Send email to active campaign
+    sendToActiveCampaign(cart, cartUrl);
 
-    // Create email's content
+    // Return a dummy email to the frontend for testing purposes
     let dummyText;
     if (cart.language === 'es') {
         dummyText =

@@ -1,8 +1,8 @@
 /*
  * Util functions to interact with the Active Campaigns APIs for cart abandonment
 */
-const ACApi = require('../../utils/ACApi.js');
 const util = require('util');
+const ACApi = require('../../utils/ACApi.js');
 
 
 // https://developers.activecampaign.com/reference#customers
@@ -14,16 +14,48 @@ const createCustomer = async (webhookData) => {
     const payload = {
         ecomCustomer: {
             connectionid: 2,
-            externalid: "customerId",
+            externalid: 'customerId',
             email,
             acceptsMarketing: 1,
         }
     };
-    const account = await ACApi.post('/ecomCustomers', payload);
-    return account;
+    const customer = await ACApi.post('/ecomCustomers', payload);
+    return customer;
 };
 
+// https://developers.activecampaign.com/reference#customers
+const createContact = async (webhookData) => {
+    const {
+        email,
+        firstName,
+        lastName,
+        language
+    } = webhookData;
 
+    let payload = {
+        contact: {
+            email,
+            firstName,
+            lastName
+        }
+    };
+    const contact = await ACApi.post('/contacts', payload);
+    if (contact.error) {
+        return contact;
+    }
+
+    return contact;
+
+    // Now that the contact is created add a custom tag for language
+    payload = {
+        contactTag: {
+            contact: contact.id,
+            tag: `Lang-${language}`
+        }
+    };
+    const resTag = await ACApi.post('/contactTags', payload);
+    return resTag;
+};
 
 const createCartAbandOrder = async (cartUrl, customer, webhookData) => {
     const {
@@ -40,21 +72,21 @@ const createCartAbandOrder = async (cartUrl, customer, webhookData) => {
         price: 1000
     }));
     const payload = {
-        'ecomOrder': {
-            'externalcheckoutid': generateRandomId(),
-            'abandoned_date': new Date(),
-            'source': 1,
-            'email': email,
-            'orderProducts': orderProducts,
-            'orderUrl': cartUrl,
-            'externalCreatedDate': new Date(),
-            'totalPrice': 20000,
-            'taxAmount': 500,
-            'discountAmount': 100,
-            'currency': 'USD',
-            'orderNumber': 'myorder-1234',
-            'connectionid': 2,
-            'customerid': customer.id
+        ecomOrder: {
+            externalcheckoutid: generateRandomId(),
+            abandoned_date: new Date(),
+            source: 1,
+            email,
+            orderProducts,
+            orderUrl: cartUrl,
+            externalCreatedDate: new Date(),
+            totalPrice: 20000,
+            taxAmount: 500,
+            discountAmount: 100,
+            currency: 'USD',
+            orderNumber: 'myorder-1234',
+            connectionid: 2,
+            customerid: customer.id
         }
     };
     console.log('PAYLOAD', util.inspect(payload, false, null, true));
@@ -75,5 +107,6 @@ function generateRandomId() {
 
 module.exports = {
     createCustomer,
+    createContact,
     createCartAbandOrder
 };
