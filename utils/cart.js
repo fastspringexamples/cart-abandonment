@@ -1,4 +1,5 @@
-const sessionsAPI = require('../apis/sessions.js');
+const sessionsAPI = require('../apis/fastspring/sessions.js');
+const { createCustomer, createCartAbandOrder } = require('../apis/activecampaign');
 const DBdriver = require('../utils/DBdriver.js');
 
 const createCartLink = async (cart, solutionType) => {
@@ -55,6 +56,16 @@ const createCartLink = async (cart, solutionType) => {
 const createCartAbandEmail = async (cart, solutionType) => {
     // Create appropiate link to add to the email content
     const cartUrl = await createCartLink(cart, solutionType);
+
+    // Create cart abandonment order in ActiveCampaign
+    const customerRes = await createCustomer(cart);
+    if (customerRes.error) {
+        console.log('Customer Error', customerRes);
+    } else {
+        const cartResult = await createCartAbandOrder(cartUrl, customerRes.ecomCustomer, cart);
+        console.log(cartResult);
+    }
+
     // Create email's content
     let dummyText;
     if (cart.language === 'es') {

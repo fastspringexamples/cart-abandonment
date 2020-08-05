@@ -2,7 +2,7 @@
  * Util functions to interact with the /accounts API endpoint
  * https://fastspring.com/docs/accounts
 */
-const FSApi = require('../utils/FSApi.js');
+const FSApi = require('../../utils/FSApi.js');
 
 // https://fastspring.com/docs/accounts#lookup
 const getAccount = async (email) => {

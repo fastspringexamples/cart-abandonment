@@ -1,4 +1,4 @@
-const FSApi = require('../utils/FSApi.js');
+const FSApi = require('../../utils/FSApi.js');
 
 // Reference https://fastspring.com/docs/sessions#creating
 const createSession = async (session) => {

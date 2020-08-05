@@ -1,5 +1,5 @@
 
-function generateRandonEmail() {
+function generateRandomEmail() {
     var chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
     var email = 'jtrujillo+';
     for(var ii=0; ii<15; ii++){
@@ -32,7 +32,7 @@ const exampleWebhooks = {
                             }
                         ]
                     },
-                    "email": generateRandonEmail(),
+                    "email": generateRandomEmail(),
                     "firstName": null,
                     "lastName": null,
                     "country": "NL",
@@ -73,7 +73,7 @@ const exampleWebhooks = {
                             }
                         ]
                     },
-                    "email": generateRandonEmail(),
+                    "email": generateRandomEmail(),
                     "firstName": null,
                     "lastName": null,
                     "country": "NL",
@@ -114,7 +114,7 @@ const exampleWebhooks = {
                             }
                         ]
                     },
-                    "email": generateRandonEmail(),
+                    "email": generateRandomEmail(),
                     "firstName": null,
                     "lastName": null,
                     "country": "NL",
@@ -237,7 +237,7 @@ const exampleWebhooks = {
                             }
                         ]
                     },
-                    "email": generateRandonEmail(),
+                    "email": generateRandomEmail(),
                     "firstName": "Jhon",
                     "lastName": "Doe",
                     "country": "NL",
