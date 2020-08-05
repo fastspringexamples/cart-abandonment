@@ -69,7 +69,12 @@
             <br>
             <div class="row">
                 <div class="col-12">
-                <pre id="response-div">
+                <h5> Result of ActiveCampaing request: </h5>
+                <pre id="AC-response-res">
+
+                </pre>
+                <h5> Example email:</h5>
+                <pre id="email-res">
 
                 </pre>
                 </div>
@@ -213,7 +218,9 @@
                     if (this.readyState === 4 && this.status === 200) {
                         const resCart = JSON.parse(this.responseText);
                         if (resCart.success) {
-                            $('#response-div').html(resCart.cartUrl);
+                            $('#email-res').html(resCart.cartEmail);
+                            console.log(resCart.ACResult);
+                            $('#AC-response-res').html(JSON.stringify(resCart.ACResult));
                         } else {
                             alert('Problem with webhook', resEncrypted.error);
                         }

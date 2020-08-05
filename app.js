@@ -53,7 +53,8 @@ app.post('/processor', async (req, res) => {
                     }
                 }
             }
-            res.json({ success: true, cartUrl: response });
+            const { cartEmail, ACResult } = response;
+            res.json({ success: true, cartEmail, ACResult });
         } else {
             throw new Error('Webhook payload missing events array');
         }

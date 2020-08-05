@@ -67,10 +67,11 @@ const sendToActiveCampaign = async (cart, cartUrl) => {
         if (cartResult.error) {
             throw new Error(cartResult.error);
         }
-        return true;
+        return { success: true };
     } catch (err) {
-        console.log('Error sending data to Active Campaign: ', err);
-        return false;
+        const error = `Error sending data to Active Campaign:  ${err}`;
+        console.log(error);
+        return { success: false, error };
     }
 };
 
@@ -86,20 +87,20 @@ const createCartAbandEmail = async (cart, solutionType) => {
     const cartUrl = await createCartLink(cart, solutionType);
 
     // Send email to active campaign
-    sendToActiveCampaign(cart, cartUrl);
+    const ACResult = await sendToActiveCampaign(cart, cartUrl);
 
     // Return a dummy email to the frontend for testing purposes
-    let dummyText;
+    let cartEmail;
     if (cart.language === 'es') {
-        dummyText =
+        cartEmail =
 `Hola${cart.firstName !== null ? ` ${cart.firstName}` : ''},
 Visite el siguiente link para completar su compra: <a href="${cartUrl}" target="_blank">${cartUrl}</a>`;
     } else {
-    dummyText =
+    cartEmail =
 `Hi${cart.firstName !== null ? ` ${cart.firstName}` : ''},
 Here is a link to complete your purchase: <a href="${cartUrl}" target="_blank">${cartUrl}</a>`;
     }
-    return dummyText;
+    return { cartEmail, ACResult };
 };
 
 module.exports = { createCartAbandEmail };
