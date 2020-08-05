@@ -49,5 +49,24 @@ const post = (params, body) => {
         });
 };
 
-module.exports = { get, post };
+const put = (params, body) => {
+    let uri = SANDBOX_URL;
+    if (params) {
+        uri = `${uri}${params}`;
+    }
+
+    const options = {
+        uri,
+        method: 'PUT',
+        headers: API_TOKEN,
+        json: true,
+        body
+    };
+    return request(options)
+        .catch(errors.StatusCodeError, (reason) => {
+            return { success: false, error: reason.message };
+        });
+};
+
+module.exports = { get, post, put };
 

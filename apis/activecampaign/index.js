@@ -5,15 +5,28 @@ const util = require('util');
 const ACApi = require('../../utils/ACApi.js');
 
 
+// https://developers.activecampaign.com/reference#create-connection
+const createConnection = async (webhookData) => {
+    const {
+        storefront
+    } = webhookData;
+
+    // First check if connection does exist already
+};
+
 // https://developers.activecampaign.com/reference#customers
-const createCustomer = async (webhookData) => {
+const createCustomer = async (webhookData, connectionid) => {
     const {
         email
     } = webhookData;
+
+    // TODO check if customers already exists before creating it.
+    // There's a problem with the API though, ask AC to fix it
+
     // Hard core values for now
     const payload = {
         ecomCustomer: {
-            connectionid: 2,
+            connectionid,
             externalid: 'customerId',
             email,
             acceptsMarketing: 1,
@@ -23,7 +36,7 @@ const createCustomer = async (webhookData) => {
     return customer;
 };
 
-// https://developers.activecampaign.com/reference#customers
+// https://developers.activecampaign.com/reference#create-contact
 const createContact = async (webhookData) => {
     const {
         email,
@@ -31,7 +44,7 @@ const createContact = async (webhookData) => {
         lastName,
         language
     } = webhookData;
-    
+
     const contactsRes = await ACApi.get(`/contacts?email=${encodeURIComponent(email)}`);
     if (!contactsRes.contacts || contactsRes.contacts.length === 0) {
         return { error: 'contact not found' };
@@ -63,7 +76,7 @@ const createContact = async (webhookData) => {
     return resTag;
 };
 
-const createCartAbandOrder = async (cartUrl, customer, webhookData) => {
+const createCartAbandOrder = async (connectionid, customerid, webhookData, cartUrl) => {
     const {
         email,
         order
@@ -91,8 +104,8 @@ const createCartAbandOrder = async (cartUrl, customer, webhookData) => {
             discountAmount: 100,
             currency: 'USD',
             orderNumber: 'myorder-1234',
-            connectionid: 2,
-            customerid: customer.id
+            connectionid,
+            customerid
         }
     };
     console.log('PAYLOAD', util.inspect(payload, false, null, true));
@@ -112,6 +125,7 @@ function generateRandomId() {
 }
 
 module.exports = {
+    createConnection,
     createCustomer,
     createContact,
     createCartAbandOrder

@@ -1,5 +1,5 @@
 const sessionsAPI = require('../apis/fastspring/sessions.js');
-const { createCustomer, createCartAbandOrder, createContact } = require('../apis/activecampaign');
+const { createConnection, createCustomer, createCartAbandOrder, createContact } = require('../apis/activecampaign');
 const DBdriver = require('../utils/DBdriver.js');
 
 const createCartLink = async (cart, solutionType) => {
@@ -48,20 +48,27 @@ const createCartLink = async (cart, solutionType) => {
 
 const sendToActiveCampaign = async (cart, cartUrl) => {
     try {
+        /*
+        const connectionRes = await createConnection(cart);
+        if (connectionRes.error) {
+            throw new Error(connectionRes.error);
+        }
+        */
+        const connectionId = 2;
         // 1. Create e-commerce customer
-        const customerRes = await createCustomer(cart);
+        const customerRes = await createCustomer(cart, connectionId);
         if (customerRes.error) {
             throw new Error(customerRes.error);
         }
-        
+
         // 2. Create contact and add tags
-        const contactRes = await createContact(cart);
+        const contactRes = await createContact(cart, connectionId);
         if (contactRes.error) {
             throw new Error(contactRes.error);
         }
-        
+        const customerId = customerRes.ecomCustomer.id;
         // 3. Create cart abandoned order to trigger automation
-        const cartResult = await createCartAbandOrder(cartUrl, customerRes.ecomCustomer, cart);
+        const cartResult = await createCartAbandOrder(connectionId, customerId, cart, cartUrl);
         if (cartResult.error) {
             throw new Error(cartResult.error);
         }
