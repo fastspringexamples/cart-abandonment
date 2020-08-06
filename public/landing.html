@@ -63,13 +63,20 @@
                     firstName,
                     lastName
                 };
+                // Add cartId as tag to the session
+                var url_string = window.location.href;
+                var url = new URL(url_string);
+                var cartId = url.searchParams.get("cartId");
 
                 securePayload = {
                     reset: true,
                     contact,
                     items,
                     country,
-                    language
+                    language,
+                    tags: {
+                        cartId
+                    }
                 };
             }
 

@@ -6,16 +6,20 @@ const createCartLink = async (cart, solutionType) => {
     let cartUrl;
     if (solutionType === 'session') {
         // Check cart items and use the sessions API to create a 24h valid sessionId
-        const { accountId, order, storefront } = cart;
+        const { accountId, order, storefront, id: cartId } = cart;
         const items = order.items.map(item => ({
             product: item.product,
             quantity: item.quantity
         }));
+        
 
         // Construct payload for API
         const sessionPayload = {
             account: accountId,
             items,
+            tags: {
+                cartId // add tag for tracking purposes
+            }
         };
         // Create session
         const session = await sessionsAPI.createSession(sessionPayload);
