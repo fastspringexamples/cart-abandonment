@@ -10,8 +10,15 @@ const createConnection = async (webhookData) => {
     const {
         storefront
     } = webhookData;
-
-    // First check if connection does exist already
+    
+    const connectionRes = await ACApi.get('/connections');
+    // Loop through connections to check if it already exists
+    const existingConnection = connectionRes.connections.find((connection) => connection.service === storefront);
+    if (existingConnection) {
+        return existingConnection;
+    }
+    // TODO Create a new connection
+    
 };
 
 // https://developers.activecampaign.com/reference#customers
@@ -109,9 +116,43 @@ const createCartAbandOrder = async (connectionid, customerid, webhookData, cartU
         }
     };
     console.log('PAYLOAD', util.inspect(payload, false, null, true));
-    
     const cartOrder = await ACApi.post('/ecomOrders', payload);
     return cartOrder;
+};
+
+/* findOrder
+ * Query AC API to get AC order whose externalcheckoutid is the FS cartId
+ *
+ * @param {String} - FS cartId
+ * @returns {Object} - AC Order or null
+ */
+const findOrder = async (cartId) => {
+    const orders = await ACApi.get(`/ecomOrders?externalcheckoutid=${cartId}`);
+    if (!(orders && orders.ecomOrders)) {
+        console.log(`Problem looking for order with externalcheckoutid=${cartId}`, orders);
+        return false;
+    }
+    // TODO the filtering of this endpoint is not currently working.
+    // While AC team fixes this bug, we'll loop through all the existing orders manually
+    const ACOrder = orders.ecomOrders.find(order => order.externalcheckoutid === cartId);
+    return ACOrder;
+};
+
+/* markCartAsComplete
+ * Calls AC API to mark the abandoned cart order as complete by adding an externalcheckoutid
+ *
+ * @param {String} - FS orderId
+ * @param {String} - ActiveCampaing E-commerce OrderId
+ * @returns {Object} - Updadet AC Order
+ */
+const markCartAsComplete = async (orderId, ACOrderId) => {
+    const payload = {
+        ecomOrder: {
+            externalcheckoutid: orderId
+        }
+    };
+    const result = await ACApi.put(`/ecomOrders/${ACOrderId}`, payload);
+    return result;
 };
 
 // The externalcheckoutid needs to be unique every time. For now we'll use this generator
@@ -128,5 +169,7 @@ module.exports = {
     createConnection,
     createCustomer,
     createContact,
-    createCartAbandOrder
+    createCartAbandOrder,
+    findOrder,
+    markCartAsComplete,
 };

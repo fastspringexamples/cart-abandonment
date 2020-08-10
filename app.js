@@ -1,6 +1,7 @@
 const express = require('express');
 
 const accountsAPI = require('./apis/fastspring/accounts.js');
+const ACApi = require('./apis/activecampaign');
 const Cart = require('./utils/cart.js');
 const DBDriver = require('./utils/DBdriver.js');
 
@@ -12,7 +13,7 @@ const port = process.env.PORT || 9009;
 
 
 /* POST /processor endpoint
- * Receives mailingListEntry.updated webhook and creates a cart abandonment email if it applies.
+ * Receives mailingListEntry.updated webhook and starts the cart abandonment process with ActiveCampaign.
  * https://fastspring.com/docs/mailinglistentry-updated/
  *
  * @param {Object} - webhook object
@@ -32,7 +33,6 @@ app.post('/processor', async (req, res) => {
                     if (resAccount.result === 'success') {
                         const accountId = resAccount.accounts[0].account;
                         data.accountId = accountId;
-                        // Do we also want to include more data like address and company?
                         response = await Cart.createCartAbandEmail(data, 'session');
                     } else if (data.firstName && data.lastName) {
                         // Account does not exist but we have the first and last names
@@ -64,7 +64,63 @@ app.post('/processor', async (req, res) => {
     }
 });
 
+/* POST /complete endpoint
+ * Receives order.completed webhook and looks for a custom order tag that represents the previously abandoned cart.
+ * That cartId in the tag is used to mark the order as complete using ActiveCampaign's API
+ * 
+ * https://fastspring.com/docs/order-completed/
+ *
+ * @param {Object} - webhook object
+ * @returns {Integer} - 200 HTTP OK
+ */
+app.post('/completed', async (req, res) => {
+    try {
+        // Check that request contains an events object
+        if (req.body && Array.isArray(req.body.events)) {
+            for (const event of req.body.events) {
+                // Only process order.completed events which were successfully completed
+                if (event.type === 'order.completed' && event.data.completed) {
+                    const { data } = event;
+                    // Get cartId from tags
+                    if (!(data.tags && data.tags.cartId)) {
+                        throw new Error('No cartId found in tags');
+                    }
+                    const { cartId, id } = data.tags;
+                    
+                    const ACOrder = await ACApi.findOrder(cartId);
+                    if (!ACOrder) {
+                        throw new Error(`No AC order found associated to cartId ${cartId}`);
+                    }
+                    const completedCart = await ACApi.markCartAsComplete(id, ACOrder.id);
+                    if (!(completedCart && completedCart.ecomOrder)) {
+                        throw new Error(`CartId ${cartId} could not be marked as completeted for order ${ACOrder.id}`);
+                    }
+                }
+            }
+        } else {
+            throw new Error('Webhook payload missing events array');
+        }
+    } catch (err) {
+        console.log('An error has occurred while processing webhook: ', err.message);
+    } finally {
+        // Always acknowledge webhook
+        // TODO is this the best approach, how do we track failed requests then?
+        res.json({ success: true });
+    }
+});
 
+
+
+
+
+/* GET /cart
+ * 
+ * This endpoint is used by the landing page to get the webhook information stored in the database
+ * based on the webhookId passed to the request
+ *
+ * @param {Integer} - webhook Id
+ * @returns {Object} -  mailingListEntry.updated webhook object
+ */
 app.get('/cart', (req, res) => {
     const { cartId } = req.query;
     if (!cartId) {
@@ -81,9 +137,12 @@ app.get('/cart', (req, res) => {
         res.json({ success: false, error: `Cart with id ${cartId} not found in database` });
         return;
     }
-    // TODO manually add data-access key
+    // Manually add data-access key
     cart.accessKey = 'GD1VWQQQRZCL0I4ZCLVKUQ';
     res.json({ success: true, data: cart });
 });
+
+
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
