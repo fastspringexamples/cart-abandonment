@@ -7,6 +7,15 @@ function generateRandomEmail() {
     }
     return `${email}@fastspring.com`;
 }
+
+function generateRandomId() {
+    var chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
+    var id = '';
+    for(var ii=0; ii<25; ii++){
+        id += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return id;
+}
 // Global object containing example cart abandonment webhooks 
 const exampleWebhooks = {
     webstorefrontURL: {
@@ -14,7 +23,7 @@ const exampleWebhooks = {
             {
                 "type": "mailingListEntry.updated",
                 "data": {
-                    "id": "45b0d46432df573c51e3585e92e3e9c612f2ac2ce197c316f234c741cbf8f7df",
+                    "id": generateRandomId(),
                     "list": "abandoned",
                     "updated": 1589211085005,
                     "reason": "abandoned",
@@ -48,7 +57,7 @@ const exampleWebhooks = {
             {
                 "type": "mailingListEntry.updated",
                 "data": {
-                    "id": "45b0d46432df573c51e3585e92e3e9c612f2ac2ce197c316f234c741cbf8f7df",
+                    "id": generateRandomId(),
                     "list": "abandoned",
                     "updated": 1589211085005,
                     "reason": "abandoned",
@@ -89,7 +98,7 @@ const exampleWebhooks = {
             {
                 "type": "mailingListEntry.updated",
                 "data": {
-                    "id": "45b0d46432df573c51e3585e92e3e9c612f2ac2ce197c316f234c741cbf8f7df",
+                    "id": generateRandomId(),
                     "list": "abandoned",
                     "updated": 1589211085005,
                     "reason": "abandoned",
@@ -130,7 +139,7 @@ const exampleWebhooks = {
             {
                 "type": "mailingListEntry.updated",
                 "data": {
-                    "id": "45b0d46432df573c51e3585e92e3e9c612f2ac2ce197c316f234c741cbf8f7df",
+                    "id": generateRandomId(),
                     "list": "abandoned",
                     "updated": 1589211085005,
                     "reason": "abandoned",
@@ -171,7 +180,7 @@ const exampleWebhooks = {
             {
                 "type": "mailingListEntry.updated",
                 "data": {
-                    "id": "45b0d46432df573c51e3585e92e3e9c612f2ac2ce197c316f234c741cbf8f7df",
+                    "id": generateRandomId(),
                     "list": "abandoned",
                     "updated": 1589211085005,
                     "reason": "abandoned",
@@ -212,7 +221,7 @@ const exampleWebhooks = {
             {
                 "type": "mailingListEntry.updated",
                 "data": {
-                    "id": "45b0d46432df573c51e3585e92e3e9c612f2ac2ce197c316f234c741cbf8f7df",
+                    "id": generateRandomId(),
                     "list": "abandoned",
                     "updated": 1589211085005,
                     "reason": "abandoned",

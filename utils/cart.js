@@ -70,7 +70,7 @@ const sendToActiveCampaign = async (cart, cartUrl) => {
         if (contactRes.error) {
             throw new Error(contactRes.error);
         }
-        const customerId = customerRes.ecomCustomer.id;
+        const customerId = customerRes.id;
         // 3. Create cart abandoned order to trigger automation
         const cartResult = await createCartAbandOrder(connectionId, customerId, cart, cartUrl);
         if (cartResult.error) {

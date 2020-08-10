@@ -10,15 +10,13 @@ const createConnection = async (webhookData) => {
     const {
         storefront
     } = webhookData;
-    
-    const connectionRes = await ACApi.get('/connections');
-    // Loop through connections to check if it already exists
-    const existingConnection = connectionRes.connections.find((connection) => connection.service === storefront);
-    if (existingConnection) {
-        return existingConnection;
+
+    const connectionRes = await ACApi.get(`/connections?filters[externalid]=${storefront}`);
+
+    if (connectionRes && connectionRes.connections > 0) {
+        return connectionRes.connections[0];
     }
     // TODO Create a new connection
-    
 };
 
 // https://developers.activecampaign.com/reference#customers
@@ -28,9 +26,14 @@ const createCustomer = async (webhookData, connectionid) => {
     } = webhookData;
 
     // TODO check if customers already exists before creating it.
-    // There's a problem with the API though, ask AC to fix it
+    const customerRes = await ACApi.get(`/ecomCustomers?filters[email]=${encodeURIComponent(email)}&filters[connectionid]=${connectionid}`);
 
-    // Hard core values for now
+    if (customerRes && customerRes.ecomCustomers.length > 0) {
+        // Customer found
+        return customerRes.ecomCustomers[0];
+    }
+
+    // Customer is new, create a new Customer
     const payload = {
         ecomCustomer: {
             connectionid,
@@ -40,7 +43,10 @@ const createCustomer = async (webhookData, connectionid) => {
         }
     };
     const customer = await ACApi.post('/ecomCustomers', payload);
-    return customer;
+    if (customer.error) {
+        return customer;
+    }
+    return customer.ecomCustomer;
 };
 
 // https://developers.activecampaign.com/reference#create-contact
@@ -68,7 +74,9 @@ const createContact = async (webhookData) => {
             }
         };
         const updatedContact = await ACApi.put(`/contacts/${contact.id}`, payload);
-        console.log(updatedContact);
+        if (updatedContact.error) {
+            console.log(updatedContact);//TODO
+        }
     }
 
     const tagId = language === 'es' ? 6 : 5;
@@ -86,7 +94,8 @@ const createContact = async (webhookData) => {
 const createCartAbandOrder = async (connectionid, customerid, webhookData, cartUrl) => {
     const {
         email,
-        order
+        order,
+        id
     } = webhookData;
 
     const orderProducts = order.items.map(item => ({
@@ -99,7 +108,7 @@ const createCartAbandOrder = async (connectionid, customerid, webhookData, cartU
     }));
     const payload = {
         ecomOrder: {
-            externalcheckoutid: generateRandomId(),
+            externalcheckoutid: id,
             abandoned_date: new Date(),
             source: 1,
             email,
@@ -110,7 +119,7 @@ const createCartAbandOrder = async (connectionid, customerid, webhookData, cartU
             taxAmount: 500,
             discountAmount: 100,
             currency: 'USD',
-            orderNumber: 'myorder-1234',
+            orderNumber: id,
             connectionid,
             customerid
         }
@@ -127,7 +136,7 @@ const createCartAbandOrder = async (connectionid, customerid, webhookData, cartU
  * @returns {Object} - AC Order or null
  */
 const findOrder = async (cartId) => {
-    const orders = await ACApi.get(`/ecomOrders?externalcheckoutid=${cartId}`);
+    const orders = await ACApi.get(`/ecomOrders?filters[externalcheckoutid]=${cartId}`);
     if (!(orders && orders.ecomOrders)) {
         console.log(`Problem looking for order with externalcheckoutid=${cartId}`, orders);
         return false;
@@ -135,6 +144,7 @@ const findOrder = async (cartId) => {
     // TODO the filtering of this endpoint is not currently working.
     // While AC team fixes this bug, we'll loop through all the existing orders manually
     const ACOrder = orders.ecomOrders.find(order => order.externalcheckoutid === cartId);
+    console.log(ACOrder);
     return ACOrder;
 };
 
@@ -152,6 +162,7 @@ const markCartAsComplete = async (orderId, ACOrderId) => {
         }
     };
     const result = await ACApi.put(`/ecomOrders/${ACOrderId}`, payload);
+    console.log(result);
     return result;
 };
 
