@@ -139,7 +139,7 @@ const findOrder = async (cartId) => {
 };
 
 /* markCartAsComplete
- * Calls AC API to mark the abandoned cart order as complete by adding an externalcheckoutid
+ * Calls AC API to mark the abandoned cart order as complete by adding an externalid
  *
  * @param {String} - FS orderId
  * @param {String} - ActiveCampaing E-commerce OrderId
@@ -148,7 +148,7 @@ const findOrder = async (cartId) => {
 const markCartAsComplete = async (orderId, ACOrderId) => {
     const payload = {
         ecomOrder: {
-            externalcheckoutid: orderId
+            externalid: orderId
         }
     };
     const result = await ACApi.put(`/ecomOrders/${ACOrderId}`, payload);
