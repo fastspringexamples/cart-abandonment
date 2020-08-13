@@ -77,6 +77,7 @@ app.post('/completed', async (req, res) => {
     try {
         // Check that request contains an events object
         if (req.body && Array.isArray(req.body.events)) {
+            const processedIds = [];
             for (const event of req.body.events) {
                 // Only process order.completed events which were successfully completed
                 if (event.type === 'order.completed' && event.data.completed) {
@@ -86,26 +87,31 @@ app.post('/completed', async (req, res) => {
                         throw new Error('No cartId found in tags');
                     }
                     const { cartId, id } = data.tags;
-                    
                     const ACOrder = await ACApi.findOrder(cartId);
                     if (!ACOrder) {
                         throw new Error(`No AC order found associated to cartId ${cartId}`);
                     }
+                
                     const completedCart = await ACApi.markCartAsComplete(id, ACOrder.id);
                     if (!(completedCart && completedCart.ecomOrder)) {
                         throw new Error(`CartId ${cartId} could not be marked as completeted for order ${ACOrder.id}`);
                     }
+                    processedIds.push(data.id);
+                } else {
+                    throw new Error(`Event type is not "order.completed": ${event.type}.
+                        Alternatively, event.data.completed is not true`);
                 }
             }
+            // Acknowledge the events that were processed
+            // TODO this is not working today, check with Eng
+            res.set('Content-Type', 'text/html');
+            res.status(202).send(processedIds.join('\n'));
         } else {
             throw new Error('Webhook payload missing events array');
         }
     } catch (err) {
         console.log('An error has occurred while processing webhook: ', err.message);
-    } finally {
-        // Always acknowledge webhook
-        // TODO is this the best approach, how do we track failed requests then?
-        res.json({ success: true });
+        res.status(500).send(err.message);
     }
 });
 
@@ -143,6 +149,6 @@ app.get('/cart', (req, res) => {
 });
 
 
-
-
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+module.exports = app;
