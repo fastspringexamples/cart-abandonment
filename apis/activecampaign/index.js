@@ -75,7 +75,7 @@ const createContact = async (webhookData) => {
         };
         const updatedContact = await ACApi.put(`/contacts/${contact.id}`, payload);
         if (updatedContact.error) {
-            console.log(updatedContact);//TODO
+            console.log(updatedContact);
         }
     }
 
@@ -88,6 +88,7 @@ const createContact = async (webhookData) => {
         }
     };
     const resTag = await ACApi.post('/contactTags', payload);
+    // TODO what if this fails?
     return resTag;
 };
 
