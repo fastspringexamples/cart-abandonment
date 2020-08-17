@@ -1,7 +1,6 @@
 /*
  * Util functions to interact with the Active Campaigns APIs for cart abandonment
 */
-const util = require('util');
 const ACApi = require('../../utils/ACApi.js');
 
 
@@ -25,7 +24,6 @@ const createCustomer = async (webhookData, connectionid) => {
         email
     } = webhookData;
 
-    // TODO check if customers already exists before creating it.
     const customerRes = await ACApi.get(`/ecomCustomers?filters[email]=${encodeURIComponent(email)}&filters[connectionid]=${connectionid}`);
 
     if (customerRes && customerRes.ecomCustomers.length > 0) {
@@ -125,7 +123,6 @@ const createCartAbandOrder = async (connectionid, customerid, webhookData, cartU
             customerid
         }
     };
-    console.log('PAYLOAD', util.inspect(payload, false, null, true));
     const cartOrder = await ACApi.post('/ecomOrders', payload);
     return cartOrder;
 };
@@ -142,10 +139,7 @@ const findOrder = async (cartId) => {
         console.log(`Problem looking for order with externalcheckoutid=${cartId}`, orders);
         return false;
     }
-    // TODO the filtering of this endpoint is not currently working.
-    // While AC team fixes this bug, we'll loop through all the existing orders manually
     const ACOrder = orders.ecomOrders.find(order => order.externalcheckoutid === cartId);
-    console.log(ACOrder);
     return ACOrder;
 };
 
@@ -163,19 +157,8 @@ const markCartAsComplete = async (orderId, ACOrderId) => {
         }
     };
     const result = await ACApi.put(`/ecomOrders/${ACOrderId}`, payload);
-    console.log(result);
     return result;
 };
-
-// The externalcheckoutid needs to be unique every time. For now we'll use this generator
-function generateRandomId() {
-    var chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
-    var checkout = 'FS';
-    for(var ii=0; ii<15; ii++){
-        checkout += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return checkout;
-}
 
 module.exports = {
     createConnection,
