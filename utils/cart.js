@@ -10,7 +10,9 @@ const createCartLink = async (cart, solutionType) => {
             accountId,
             order,
             storefront,
-            id: cartId
+            id: cartId,
+            currency,
+            country
         } = cart;
         const items = order.items.map(item => ({
             product: item.product,
@@ -20,7 +22,10 @@ const createCartLink = async (cart, solutionType) => {
         // Construct payload for API
         const sessionPayload = {
             account: accountId,
+            currency,
+            country,
             items,
+            expiration: 7,
             tags: {
                 cartId // add tag for tracking purposes
             }
