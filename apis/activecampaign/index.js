@@ -94,7 +94,8 @@ const createCartAbandOrder = async (connectionid, customerid, webhookData, cartU
     const {
         email,
         order,
-        id
+        id,
+        currency
     } = webhookData;
 
     const orderProducts = order.items.map(item => ({
@@ -117,7 +118,7 @@ const createCartAbandOrder = async (connectionid, customerid, webhookData, cartU
             totalPrice: 20000,
             taxAmount: 500,
             discountAmount: 100,
-            currency: 'USD',
+            currency,
             orderNumber: id,
             connectionid,
             customerid

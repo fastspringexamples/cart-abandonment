@@ -1,6 +1,6 @@
 {
-    "6vvt97qy7uxk5fo3zntjze943n5": {
-        "id": "6vvt97qy7uxk5fo3zntjze943n5",
+    "jbxf8hc8m9qi3zpcujbkhse5m": {
+        "id": "jbxf8hc8m9qi3zpcujbkhse5m",
         "list": "abandoned",
         "updated": 1589211085005,
         "reason": "abandoned",
@@ -10,27 +10,27 @@
             "order": null,
             "items": [
                 {
-                    "product": "cam-pack",
-                    "quantity": 1,
-                    "display": "cam-pack",
-                    "summary": null,
-                    "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/LElLgQ6PR4k/thumbnail-cam-pack.png"
-                },
-                {
                     "product": "phot-io-main-app",
-                    "quantity": 2,
+                    "quantity": 1,
                     "display": "phot-io-main-app",
                     "summary": "WAHOOOO!  An incredible, full-featured ecosystem for managing digital imagery throughout the entire asset lifecycle regardless of the size and scope of your enterprise.",
                     "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/v70BxblbRv0/photio-imac-hero.png"
+                },
+                {
+                    "product": "cam-pack",
+                    "quantity": 2,
+                    "display": "cam-pack",
+                    "summary": null,
+                    "imageUrl": "https://d8y8nchqlnmka.cloudfront.net/C0ar6e4kSTE/LElLgQ6PR4k/thumbnail-cam-pack.png"
                 }
             ]
         },
-        "email": "jtrujillo+09ahqkgdhrtli7a@fastspring.com",
+        "email": "jtrujillo+32939393924@fastspring.com",
         "firstName": null,
         "lastName": null,
         "country": "NL",
         "currency": "EUR",
         "language": "en",
-        "storefront": "fastspringexamplesii"
+        "storefront": "fastspringexamplesii/popup"
     }
 }
