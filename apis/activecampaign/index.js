@@ -3,19 +3,26 @@
 */
 const ACApi = require('../../utils/ACApi.js');
 
+const SELLER_FIELDS = {
+    SELLER_NAME: 1,
+    SELLER_LOGO: 2,
+    SELLER_LINK: 5
+};
+
+const LANG_TAGS = {
+    es: 6,
+    en: 5
+};
 
 // https://developers.activecampaign.com/reference#create-connection
-const createConnection = async (webhookData) => {
-    const {
-        storefront
-    } = webhookData;
-
-    const connectionRes = await ACApi.get(`/connections?filters[externalid]=${storefront}`);
-
-    if (connectionRes && connectionRes.connections > 0) {
+const getConnection = async (storefront) => {
+    // Cleanse storefront so that we only get the actual store
+    const store = storefront.includes('/') ? storefront.split('/')[0] : storefront;
+    const connectionRes = await ACApi.get(`/connections?filters[externalid]=${store}`);
+    if (connectionRes && connectionRes.connections.length > 0) {
         return connectionRes.connections[0];
     }
-    // TODO Create a new connection
+    return connectionRes; // No connection found for that storefront
 };
 
 // https://developers.activecampaign.com/reference#customers
@@ -48,7 +55,7 @@ const createCustomer = async (webhookData, connectionid) => {
 };
 
 // https://developers.activecampaign.com/reference#create-contact
-const createContact = async (webhookData) => {
+const createContact = async (webhookData, connection) => {
     const {
         email,
         firstName,
@@ -61,31 +68,45 @@ const createContact = async (webhookData) => {
         return { error: 'contact not found' };
     }
     const contact = contactsRes.contacts[0];
-
     // Add first and last name informations if present
-    if (!contact.firstName && (firstName || lastName)) {
-        const payload = {
-            contact: {
-                email,
-                firstName,
-                lastName
-            }
-        };
-        const updatedContact = await ACApi.put(`/contacts/${contact.id}`, payload);
-        if (updatedContact.error) {
-            console.log(updatedContact);
+    //if (!contact.firstName && (firstName || lastName)) {
+    // TODO what happens a buyer currently in two different cart abandonment processes?
+    const payload = {
+        contact: {
+            email,
+            firstName,
+            lastName,
+            fieldValues: [
+                {
+                    field: SELLER_FIELDS.SELLER_NAME,
+                    value: connection.name
+                },
+                {
+                    field: SELLER_FIELDS.SELLER_LOGO,
+                    value: connection.logoUrl
+                },
+                {
+                    field: SELLER_FIELDS.SELLER_LINK,
+                    value: connection.linkUrl
+                }
+            ]
         }
+    };
+    const updatedContact = await ACApi.put(`/contacts/${contact.id}`, payload);
+    if (updatedContact.error) {
+        console.log(updatedContact); // TODO what if this fails?
     }
 
-    const tagId = language === 'es' ? 6 : 5;
+    const tagId = language === 'es' ? LANG_TAGS.es : LANG_TAGS.en;
     // Now that the contact is created add a custom tag for language
-    const payload = {
+    const langPayload = {
         contactTag: {
             contact: contact.id,
             tag: tagId
         }
     };
-    const resTag = await ACApi.post('/contactTags', payload);
+
+    const resTag = await ACApi.post('/contactTags', langPayload);
     // TODO what if this fails?
     return resTag;
 };
@@ -162,7 +183,7 @@ const markCartAsComplete = async (orderId, ACOrderId) => {
 };
 
 module.exports = {
-    createConnection,
+    getConnection,
     createCustomer,
     createContact,
     createCartAbandOrder,

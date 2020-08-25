@@ -1,5 +1,5 @@
 const sessionsAPI = require('../apis/fastspring/sessions.js');
-const { createConnection, createCustomer, createCartAbandOrder, createContact } = require('../apis/activecampaign');
+const { getConnection, createCustomer, createCartAbandOrder, createContact } = require('../apis/activecampaign');
 const DBdriver = require('../utils/DBdriver.js');
 
 const createCartLink = async (cart, solutionType) => {
@@ -61,13 +61,12 @@ const createCartLink = async (cart, solutionType) => {
 
 const sendToActiveCampaign = async (cart, cartUrl) => {
     try {
-        /*
-        const connectionRes = await createConnection(cart);
-        if (connectionRes.error) {
+        const connectionRes = await getConnection(cart.storefront);
+        if (!connectionRes && connectionRes.error) {
             throw new Error(connectionRes.error);
         }
-        */
-        const connectionId = 2;
+
+        const connectionId = connectionRes.id;
         // 1. Create e-commerce customer
         const customerRes = await createCustomer(cart, connectionId);
         if (customerRes.error) {
@@ -75,7 +74,7 @@ const sendToActiveCampaign = async (cart, cartUrl) => {
         }
 
         // 2. Create contact and add tags
-        const contactRes = await createContact(cart, connectionId);
+        const contactRes = await createContact(cart, connectionRes);
         if (contactRes.error) {
             throw new Error(contactRes.error);
         }
