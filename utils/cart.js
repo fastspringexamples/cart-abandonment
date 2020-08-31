@@ -6,17 +6,26 @@ const createCartLink = async (cart, solutionType) => {
     let cartUrl;
     if (solutionType === 'session') {
         // Check cart items and use the sessions API to create a 24h valid sessionId
-        const { accountId, order, storefront, id: cartId } = cart;
+        const {
+            accountId,
+            order,
+            storefront,
+            id: cartId,
+            currency,
+            country
+        } = cart;
         const items = order.items.map(item => ({
             product: item.product,
             quantity: item.quantity
         }));
-        
 
         // Construct payload for API
         const sessionPayload = {
             account: accountId,
+            currency,
+            country,
             items,
+            expiration: 7,
             tags: {
                 cartId // add tag for tracking purposes
             }
@@ -27,7 +36,7 @@ const createCartLink = async (cart, solutionType) => {
             throw new Error(`Problems creating session: ${session.error}`);
         }
         // Create sessionURL
-        const storefrontId = cart.storefront;
+        const storefrontId = storefront;
         const storefrontURL = storefrontId.includes('/') ?
             `${storefrontId.split('/')[0]}.test.onfastspring.com/${storefrontId.split('/')[1]}-${storefrontId.split('/')[0]}` : // Popup URL
             `${storefrontId}.test.onfastspring.com`; // Web storefront URL
@@ -78,9 +87,9 @@ const sendToActiveCampaign = async (cart, cartUrl) => {
         }
         return { success: true };
     } catch (err) {
-        const error = `Error sending data to Active Campaign:  ${err}`;
+        const error = `Error sending data to Active Campaign: ${err}   --- created checkoutUrl: ${cartUrl}`;
         console.log(error);
-        return { success: false, error };
+        throw new Error(error);
     }
 };
 
